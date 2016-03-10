@@ -15,7 +15,7 @@ install {
                 packaging 'aar'
 
                 name 'Android Easy Gcm'
-                url 'https://github.com/joxad/android-easy-spotify/'
+                url 'https://github.com/joxad/android-easy-spotify'
 
                 licenses {
                     license {
