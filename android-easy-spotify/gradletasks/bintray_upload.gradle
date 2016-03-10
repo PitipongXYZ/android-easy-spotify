@@ -3,8 +3,8 @@ apply plugin: 'com.jfrog.bintray'
 
 version = lib_version
 
-def gitUrl = 'https://github.com/joxad/android-easy-gcm'
-def siteUrl = 'https://github.com/joxad/android-easy-gcm'
+def gitUrl = 'https://github.com/joxad/android-easy-spotify'
+def siteUrl = 'https://github.com/joxad/android-easy-spotify'
 
 group = "com.github.joxad"
 
@@ -15,7 +15,7 @@ install {
                 packaging 'aar'
 
                 name 'Android Easy Gcm'
-                url 'https://github.com/joxad/android-easy-gcm/'
+                url 'https://github.com/joxad/android-easy-spotify/'
 
                 licenses {
                     license {
@@ -63,7 +63,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "android-easy-gcm"
+        name = "android-easy-spotify"
         licenses = ["Apache-2.0"]
         publish = true
     }
