@@ -160,7 +160,7 @@ public class SpotifyManager {
     /***
      * @param uri start the song selected
      */
-    public void startSong(final String uri) {
+    public static void startSong(final String uri) {
         player.play(uri);
     }
 
