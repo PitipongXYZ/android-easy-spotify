@@ -13,7 +13,7 @@ import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.Spotify;
-
+import java.util.List;
 /**
  * Created by josh on 10/03/16.
  */
