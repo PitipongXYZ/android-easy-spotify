@@ -160,10 +160,17 @@ public class SpotifyManager {
     /***
      * @param uri start the song selected
      */
-    public static void startSong(final String uri) {
+    public static void play(final String uri) {
         player.play(uri);
     }
 
+
+    /***
+     * @param uri start the song selected
+     */
+    public static void play(final List<String> uris) {
+        player.play(uris);
+    }
 
     /***
      * Interface needed to get the callback of the token
