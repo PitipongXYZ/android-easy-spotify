@@ -3,19 +3,47 @@ package com.joxad.android_easy_spotify;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
-import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.Spotify;
-import java.util.List;
-/**
- * Created by josh on 10/03/16.
+
+/***
+ * {@link SpotifyManager is a helper to the connexion with token/code}
+ * <p>
+ * In your Activity :
+ * <p>
+ * <p>
+ * new SpotifyManager.Builder()
+ * .setContext(context)
+ * .setApiCallback(context.getString(R.string.api_spotify_callback))
+ * .setApiKey(context.getString(R.string.api_spotify_id))
+ * .setScope(new String[]{"user-read-private", "streaming"})
+ * .setConnectionType(Type.CODE)
+ * .build();
+ * <p>
+ * <p>
+ * SpotifyManager.loginWithBrowser(new SpotifyManager.OAuthListener() {
+ *
+ * @Override public void onReceived(String code) {
+ * accessCode = code;
+ * getTokenFromCode();
+ * }
+ * @Override public void onError(String error) {
+ * Log.d(TAG, error);
+ * }
+ * });
+ * @<code> public void onActivityResult(int requestCode, int resultCode, Intent data) {
+ * SpotifyManager.onActivityResult(requestCode, resultCode, data);
+ * }
+ * public void onNewIntent(Intent intent) {
+ * SpotifyManager.onNewIntent(intent);
+ * }
+ * <p>
+ * </code>
  */
 public class SpotifyManager {
 
@@ -24,61 +52,58 @@ public class SpotifyManager {
     public static PlayerNotificationCallback playerNotificationCallback;
     public static ConnectionStateCallback connectionStateCallback;
 
-    private static Player player;
     private static Activity context;
-    private static String API_KEY;
-    private static String API_CALLBACK;
-    private static AuthenticationResponse.Type RESPONSE_TYPE;
-
-
+    protected static String API_KEY;
     private static OAuthListener oAuthListener;
-    private static String[] scopes;
+
 
     /****
      * @param c
      * @param apiKey
-     * @param apiCallback
-     * @param type
-     * @param scope
      */
-    private static void init(Activity c, final String apiKey, final String apiCallback, AuthenticationResponse.Type type, final String[] scope) {
+    private static void init(Activity c, final String apiKey) {
         SpotifyManager.context = c;
         SpotifyManager.API_KEY = apiKey;
-        SpotifyManager.API_CALLBACK = apiCallback;
-        SpotifyManager.RESPONSE_TYPE = type;
-        SpotifyManager.scopes = scope;
-
     }
+
+
+    /***
+     * Use this method to login with the webview
+     *
+     * @param oAuthListener
+     * @param type
+     * @param apiCallback
+     * @param scopes
+     */
+    public static void loginWithBrowser(final Type type, final String apiCallback, final String[] scopes, final OAuthListener oAuthListener) {
+        setoAuthListener(oAuthListener);
+        AuthenticationClient.openLoginInBrowser(context, buildRequest(type, apiCallback, scopes));
+    }
+
 
     /***
      * Build the REquest according to the configuration given
      *
      * @return
      */
-    private static AuthenticationRequest buildRequest() {
+    private static AuthenticationRequest buildRequest(final Type type, final String apiCallback, final String[] scopes) {
+        AuthenticationResponse.Type spotifyType = (type == Type.CODE) ? AuthenticationResponse.Type.CODE : AuthenticationResponse.Type.TOKEN;
+
         AuthenticationRequest.Builder builder = new AuthenticationRequest
-                .Builder(SpotifyManager.API_KEY,
-                SpotifyManager.RESPONSE_TYPE,
-                SpotifyManager.API_CALLBACK)
-                .setScopes(scopes);
+                .Builder(SpotifyManager.API_KEY, spotifyType, apiCallback).setScopes(scopes);
         return builder.build();
     }
 
-    /***
-     *
-     */
-    public static void loginWithBrowser(OAuthListener oAuthListener) {
-        setoAuthListener(oAuthListener);
-        AuthenticationClient.openLoginInBrowser(context, buildRequest());
-    }
 
     /***
-     *
+     * @param type
+     * @param apiCallback
+     * @param scopes
+     * @param oAuthListener
      */
-    public static void loginWithActivity(OAuthListener oAuthListener) {
+    public static void loginWithActivity(final Type type, final String apiCallback, final String[] scopes, final OAuthListener oAuthListener) {
         setoAuthListener(oAuthListener);
-        AuthenticationClient.openLoginActivity(context, REQUEST_CODE, buildRequest());
-
+        AuthenticationClient.openLoginActivity(context, REQUEST_CODE, buildRequest(type, apiCallback, scopes));
     }
 
     /***
@@ -131,46 +156,6 @@ public class SpotifyManager {
         }
     }
 
-    /***
-     * @param token              : SPoitfy token needed to use the api
-     * @param connectionCallback
-     * @param playerCallback
-     */
-    public static void startPlayer(String token, ConnectionStateCallback connectionCallback, PlayerNotificationCallback playerCallback) {
-
-        Config playerConfig = new Config(context, token, API_KEY);
-
-        SpotifyManager.playerNotificationCallback = playerCallback;
-        SpotifyManager.connectionStateCallback = connectionCallback;
-        Spotify.getPlayer(playerConfig, context, new Player.InitializationObserver() {
-            @Override
-            public void onInitialized(Player pl) {
-                player = pl;
-                player.addConnectionStateCallback(SpotifyManager.connectionStateCallback);
-                player.addPlayerNotificationCallback(SpotifyManager.playerNotificationCallback);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
-            }
-        });
-    }
-
-    /***
-     * @param uri start the song selected
-     */
-    public static void play(final String uri) {
-        player.play(uri);
-    }
-
-
-    /***
-     * @param uri start the song selected
-     */
-    public static void play(final List<String> uris) {
-        player.play(uris);
-    }
 
     /***
      * Interface needed to get the callback of the token
@@ -191,13 +176,13 @@ public class SpotifyManager {
         SpotifyManager.oAuthListener = oAuthListener;
     }
 
+    /***
+     *
+     */
     public static class Builder {
 
         private Activity context;
         private String apiKey;
-        private String apiCallback;
-        private String[] scope;
-        private AuthenticationResponse.Type connectionType;
 
         /***
          * @param context
@@ -217,32 +202,6 @@ public class SpotifyManager {
             return this;
         }
 
-        /***
-         * @param connectionType
-         * @return
-         */
-        public Builder setConnectionType(final AuthenticationResponse.Type connectionType) {
-            this.connectionType = connectionType;
-            return this;
-        }
-
-        /***
-         * @param apiCallback
-         * @return
-         */
-        public Builder setApiCallback(final String apiCallback) {
-            this.apiCallback = apiCallback;
-            return this;
-        }
-
-        /**
-         * @param scope
-         * @return
-         */
-        public Builder setScope(String[] scope) {
-            this.scope = scope;
-            return this;
-        }
 
         /***
          *
@@ -252,13 +211,7 @@ public class SpotifyManager {
                 throw new Exception("Please set the Context");
             if (this.apiKey == null)
                 throw new Exception("Please set the APIKey");
-            if (this.connectionType == null)
-                throw new Exception("Please set the ConnectionType");
-            if (this.apiCallback == null)
-                throw new Exception("Please set the Callback");
-            if (this.scope == null)
-                scope = new String[]{"user-read-private", "streaming"};
-            SpotifyManager.init(this.context, this.apiKey, this.apiCallback, this.connectionType, this.scope);
+            SpotifyManager.init(this.context, this.apiKey);
         }
 
     }

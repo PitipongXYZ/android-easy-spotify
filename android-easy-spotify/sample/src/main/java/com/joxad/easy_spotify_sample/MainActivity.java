@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.joxad.android_easy_spotify.SpotifyManager;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import com.joxad.android_easy_spotify.Type;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,20 +22,17 @@ public class MainActivity extends AppCompatActivity {
         try {
             new SpotifyManager.Builder()
                     .setContext(this)
-                    .setApiCallback(getString(R.string.api_spotify_callback))
                     .setApiKey(getString(R.string.api_spotify_id))
-                    .setScope(new String[]{"user-read-private", "streaming"})
-                    .setConnectionType(AuthenticationResponse.Type.CODE)
                     .build();
         } catch (Exception e) {
             Log.d(TAG, e.getLocalizedMessage());
         }
 
-        SpotifyManager.loginWithActivity(new SpotifyManager.OAuthListener() {
+        SpotifyManager.loginWithBrowser(Type.CODE, getString(R.string.api_spotify_callback), new String[]{"user-read-private", "streaming"}, new SpotifyManager.OAuthListener() {
             @Override
             public void onReceived(String code) {
                 Log.d(TAG, code);
-               tv.setText(code);
+                tv.setText(code);
             }
 
             @Override
@@ -50,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SpotifyManager.onActivityResult(requestCode,resultCode,data);
+        SpotifyManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
