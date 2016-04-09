@@ -74,15 +74,15 @@ public class SpotifyManager {
      * @param scopes        uses the {@link Scope}
      * @param oAuthListener
      */
-    public static void loginWithActivity(final Activity activity, final Type type, final String apiCallback, final String[] scopes, final OAuthListener oAuthListener) {
+    public static void loginWithActivity(final Activity activity, final Type type, @StringRes final int apiCallback, final String[] scopes, final OAuthListener oAuthListener) {
         setoAuthListener(oAuthListener);
-        AuthenticationClient.openLoginActivity(activity, REQUEST_CODE, buildRequest(type, apiCallback, scopes));
+        AuthenticationClient.openLoginActivity(activity, REQUEST_CODE, buildRequest(type, context.getString(apiCallback), scopes));
     }
 
 
     /***
      * Manage the answer of Spotify when using the SpotifyActivity using
-     * {@link #loginWithActivity(Activity, Type, String, String[], OAuthListener)}
+     * {@link #loginWithActivity(Activity, Type, int, String[], OAuthListener)}
      *
      * @param requestCode
      * @param resultCode

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.joxad.android_easy_spotify.Scope;
@@ -21,21 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tv = (TextView) findViewById(R.id.tv);
 
-        SpotifyManager.loginWithBrowser(this, Type.CODE, R.string.api_spotify_callback, new String[]{Scope.USER_READ_PRIVATE, Scope.STREAMING},
-                new SpotifyManager.OAuthListener() {
-                    @Override
-                    public void onReceived(String code) {
-                        Log.d(TAG, code);
-                        tv.setText(code);
-                    }
 
-                    @Override
-                    public void onError(String error) {
-                        Log.d(TAG, error);
-                        tv.setText(error);
-
-                    }
-                });
     }
 
     @Override
@@ -54,4 +41,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    public void loginBrowser(View view) {
+        SpotifyManager.loginWithBrowser(this, Type.CODE, R.string.api_spotify_callback, new String[]{Scope.USER_READ_PRIVATE, Scope.STREAMING}, oAuthListener);
+    }
+
+    public void loginActivity(View view) {
+        SpotifyManager.loginWithActivity(this, Type.CODE, R.string.api_spotify_callback, new String[]{Scope.USER_READ_PRIVATE, Scope.STREAMING}, oAuthListener);
+    }
+
+
+    SpotifyManager.OAuthListener oAuthListener = new SpotifyManager.OAuthListener() {
+        @Override
+        public void onReceived(String code) {
+            Log.d(TAG, code);
+            tv.setText("CODE" + code);
+        }
+
+        @Override
+        public void onError(String error) {
+            Log.d(TAG, error);
+            tv.setText(error);
+
+        }
+    };
 }

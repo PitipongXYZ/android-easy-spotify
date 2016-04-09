@@ -1,6 +1,7 @@
 package com.joxad.android_easy_spotify;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.spotify.sdk.android.player.Config;
@@ -19,13 +20,17 @@ public class SpotifyPlayerManager {
     private static Context context;
 
     /***
-     * @param token    : Spotify token needed to use the api
-     * @param observer : used to know when player is ready
+     * @param context
+     * @param token                      : Spotify token needed to use the api
+     * @param observer                   : used to know when player is ready
+     * @param playerNotificationCallback
+     * @param connectionStateCallback
      */
-    public static void startPlayer(final Context context, String token, final Player.InitializationObserver observer) {
-
+    public static void startPlayer(final Context context, String token, final Player.InitializationObserver observer, @Nullable PlayerNotificationCallback playerNotificationCallback, @Nullable ConnectionStateCallback connectionStateCallback) {
+        SpotifyPlayerManager.context = context;
         Config playerConfig = new Config(context, token, SpotifyManager.API_KEY);
-
+        setConnectionStateCallback(connectionStateCallback);
+        setPlayerNotificationCallback(playerNotificationCallback);
         Spotify.getPlayer(playerConfig, context, new Player.InitializationObserver() {
             @Override
             public void onInitialized(Player pl) {
@@ -50,7 +55,7 @@ public class SpotifyPlayerManager {
      *
      * @param playerCallback
      */
-    public static void setPlayerNotificationCallback(PlayerNotificationCallback playerCallback) {
+    private static void setPlayerNotificationCallback(PlayerNotificationCallback playerCallback) {
         SpotifyManager.playerNotificationCallback = playerCallback;
 
     }
@@ -60,7 +65,7 @@ public class SpotifyPlayerManager {
      *
      * @param connectionCallback
      */
-    public static void setConnectionStateCallback(ConnectionStateCallback connectionCallback) {
+    private static void setConnectionStateCallback(ConnectionStateCallback connectionCallback) {
         SpotifyManager.connectionStateCallback = connectionCallback;
     }
 
