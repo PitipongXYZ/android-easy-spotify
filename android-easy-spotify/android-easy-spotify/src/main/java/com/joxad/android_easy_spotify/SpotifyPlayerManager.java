@@ -26,7 +26,7 @@ public class SpotifyPlayerManager {
      * @param playerNotificationCallback
      * @param connectionStateCallback
      */
-    public static void startPlayer(final Context context, String token, final Player.InitializationObserver observer, @Nullable PlayerNotificationCallback playerNotificationCallback, @Nullable ConnectionStateCallback connectionStateCallback) {
+    public static void startPlayer(final Context context, String token, final Player.InitializationObserver observer, @Nullable final PlayerNotificationCallback playerNotificationCallback, @Nullable final ConnectionStateCallback connectionStateCallback) {
         SpotifyPlayerManager.context = context;
         Config playerConfig = new Config(context, token, SpotifyManager.API_KEY);
         setConnectionStateCallback(connectionStateCallback);
@@ -35,8 +35,10 @@ public class SpotifyPlayerManager {
             @Override
             public void onInitialized(Player pl) {
                 player = pl;
-                player.addConnectionStateCallback(SpotifyManager.connectionStateCallback);
-                player.addPlayerNotificationCallback(SpotifyManager.playerNotificationCallback);
+                if (connectionStateCallback != null)
+                    player.addConnectionStateCallback(SpotifyManager.connectionStateCallback);
+                if (playerNotificationCallback != null)
+                    player.addPlayerNotificationCallback(SpotifyManager.playerNotificationCallback);
                 observer.onInitialized(player);
             }
 
