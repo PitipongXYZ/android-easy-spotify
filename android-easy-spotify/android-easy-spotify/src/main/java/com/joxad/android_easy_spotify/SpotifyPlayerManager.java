@@ -18,12 +18,11 @@ public class SpotifyPlayerManager {
     private static Player player;
     private static Context context;
 
-
     /***
-     * @param token    : SPoitfy token needed to use the api
+     * @param token    : Spotify token needed to use the api
      * @param observer : used to know when player is ready
      */
-    public static void startPlayer(String token, final Player.InitializationObserver observer) {
+    public static void startPlayer(final Context context, String token, final Player.InitializationObserver observer) {
 
         Config playerConfig = new Config(context, token, SpotifyManager.API_KEY);
 
@@ -93,6 +92,13 @@ public class SpotifyPlayerManager {
     public static void pause() {
         player.pause();
 
+    }
+
+    /***
+     * Destroy the SpotifyPlayer
+     */
+    public static void destroy() {
+        Spotify.destroyPlayer(context);
     }
 
     /***
