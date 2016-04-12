@@ -51,6 +51,13 @@ public class SpotifyPlayerManager {
         });
     }
 
+    /***
+     * Use this method to update the player token
+     * @param oauthToken
+     */
+    public static void updateToken(final String oauthToken) {
+        player.login(oauthToken);
+    }
 
     /***
      * Set the callback on the player (will be used to have information about the playing status)
