@@ -1,10 +1,14 @@
 # AndroidEasySpotify
+
+Version : 1.0.9
+----
+
 Use this library to add Spotfy to your project, only in a few minutes !
 
 # Installation
 
 Top Level Gradle :
-```
+```groovy
 allprojects {
     repositories {
         maven {
@@ -16,9 +20,9 @@ allprojects {
 
 Project's build.gradle
 
-```
+```groovy
 dependencies {
-    compile 'com.github.joxad:android-easy-spotify:1.0.0'
+    compile 'com.github.joxad:android-easy-spotify:$version'
 }
 ```
 
@@ -26,9 +30,9 @@ dependencies {
 
 In whatever class with Context (better in your first launched Activity class) 
 
-## Create EasyGCM
+## Create SpotifyManager
  
-```
+```java
  new SpotifyManager.Builder()
                     .setContext(this)
                     .setApiCallback(getString(R.string.api_spotify_callback))
@@ -42,7 +46,7 @@ In whatever class with Context (better in your first launched Activity class)
 ## Login With Activity
  
   
-```
+```java
   SpotifyManager.loginWithActivity(new SpotifyManager.OAuthListener() {
             @Override
             public void onReceived(String code) {
@@ -58,7 +62,7 @@ In whatever class with Context (better in your first launched Activity class)
 ```
 
 ## Login With WebView
-```
+```java
 
 SpotifyManager.loginWithBrowser(new SpotifyManager.OAuthListener() {
             @Override
@@ -74,4 +78,7 @@ SpotifyManager.loginWithBrowser(new SpotifyManager.OAuthListener() {
 
 
 ```
+
+
+
 
