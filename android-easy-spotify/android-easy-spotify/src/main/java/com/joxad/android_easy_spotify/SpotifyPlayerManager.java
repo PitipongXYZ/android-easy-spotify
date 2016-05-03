@@ -53,6 +53,7 @@ public class SpotifyPlayerManager {
 
     /***
      * Use this method to update the player token
+     *
      * @param oauthToken
      */
     public static void updateToken(final String oauthToken) {
@@ -99,6 +100,21 @@ public class SpotifyPlayerManager {
         player.play(uris);
     }
 
+    /***
+     * Goes to next track
+     */
+    public static void next() {
+        player.skipToNext();
+    }
+
+
+    /***
+     * Goes to previous track
+     */
+    public static void previous() {
+        player.skipToPrevious();
+    }
+
 
     /**
      * Pause the player
@@ -106,6 +122,13 @@ public class SpotifyPlayerManager {
     public static void pause() {
         player.pause();
 
+    }
+
+    /***
+     * Resume a paused track
+     */
+    public static void resume() {
+        player.resume();
     }
 
     /***
@@ -127,5 +150,9 @@ public class SpotifyPlayerManager {
      */
     public static void shutdown() {
         player.shutdown();
+    }
+
+    public static Player player() {
+        return player;
     }
 }

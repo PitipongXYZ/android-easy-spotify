@@ -1,6 +1,6 @@
 # AndroidEasySpotify
 
-Version : 1.0.9
+Version : 1.1.1
 ----
 
 Use this library to add Spotfy to your project, only in a few minutes !
